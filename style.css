@@ -1,0 +1,7 @@
+#canvasContainer, #buttonContainer {
+    text-align: center;
+}
+
+canvas {
+    border: 3px solid black;
+}
