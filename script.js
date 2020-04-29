@@ -9,6 +9,8 @@ const canvasHeight = 419;
 const rectSize = (canvasWidth - columns + 1) / columns;
 const black = '#000000';
 const gray = '#808080';
+let randomItemResult;
+let eventKey = 3;
 
 const items = [
   [
@@ -40,11 +42,35 @@ const items = [
   ],
 ];
 
+function moveHorizontally() {
+  document.addEventListener('keydown', (event) => {
+
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      console.log(event.key);
+    }
+
+    switch (event.key) {
+      case 'ArrowLeft':
+        eventKey -= 1;
+        colorGameField();
+        movingItem(eventKey);
+        break;
+      case 'ArrowRight':
+        eventKey += 1;
+        colorGameField();
+        movingItem(eventKey);
+        break;
+
+      default:
+        break;
+    }
+  });
+}
+
 function randomItem() {
   const randomNumber = Math.floor(Math.random() * 7);
   return items[randomNumber];
 }
-
 
 function recolor() {
   for (let i = 0; i < arrCanvas.length; i++) {
@@ -61,7 +87,7 @@ function recolor() {
 }
 
 function firstItem() {
-  const randomItemResult = randomItem();
+  randomItemResult = randomItem();
   for (let i = 0; i < randomItemResult.length; i++) {
     for (let j = 0; j < randomItemResult[i].length; j++) {
       if (randomItemResult[i][j] === 1) {
@@ -72,17 +98,27 @@ function firstItem() {
   recolor();
 }
 
+function movingItem(moveX) {
+  for (let i = 0; i < randomItemResult.length; i++) {
+    for (let j = 0; j < randomItemResult[i].length; j++) {
+      if (randomItemResult[i][j] === 1) {
+        arrCanvas[i][j + moveX] = 1;
+      } else {
+        //arrCanvas[i][j] = 0;
+      }
+    }
+  }
+  recolor();
+}
+
 function colorGameField() {
   for (let i = 0; i < rows; i++) {
-    arrCanvas.push([0]);
+    arrCanvas[i] = [];
     for (let j = 0; j < columns; j++) {
       arrCanvas[i][j] = 0;
-      if (arrCanvas[i][j] === 0) {
-        ctx.fillStyle = gray;
-        ctx.fillRect(j * (rectSize + 1), i * (rectSize + 1), rectSize, rectSize);
-      }
     }
   }
 }
 colorGameField();
 firstItem(randomItem());
+moveHorizontally();
