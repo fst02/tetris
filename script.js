@@ -10,44 +10,27 @@ const rectSize = (canvasWidth - columns + 1) / columns;
 const black = '#000000';
 const gray = '#808080';
 let randomItemResult;
-let moveX = 3;
+let offset = 3;
 let positionX = 0;
 let positionY = 0;
+const initialOffset = 3;
 
-const items = [
-  [
-    [1, 1, 1],
-    [0, 1, 0],
-  ],
-  [
-    [0, 1, 1],
-    [1, 1, 0],
-  ],
-  [
-    [1, 1, 0],
-    [0, 1, 1],
-  ],
-  [
-    [1, 0, 0],
-    [1, 1, 1],
-  ],
-  [
-    [0, 0, 1],
-    [1, 1, 1],
-  ],
-  [
-    [1, 1, 1, 1],
-  ],
-  [
-    [1, 1],
-    [1, 1],
-  ],
-];
+function positionItem(positionNumber) {
+  for (let i = 0; i < randomItemResult.length; i++) {
+    for (let j = 0; j < randomItemResult[i].length; j++) {
+      if (randomItemResult[i][j] === 1) {
+        arrCanvas[i][j + positionNumber] = 1;
+      }
+    }
+  }
+  recolor();
+  updateElement();
+}
 
-function hasConflict(d1, d2) {
-  for (let i = 0; i < d1.length; ++i) {
-    for (let j = 0; j < d1[i].length; ++j) {
-      if (d1[i][j] === 1 && d2[i][j] === 1) {
+function hasConflict(display1, display2) {
+  for (let i = 0; i < display1.length; ++i) {
+    for (let j = 0; j < display1[i].length; ++j) {
+      if (display1[i][j] === 1 && display2[i][j] === 1) {
         return true;
       }
     }
@@ -59,7 +42,7 @@ function updateElement() {
   for (let i = 0; i < randomItemResult.length; i++) {
     for (let j = 0; j < randomItemResult[i].length; j++) {
       if (randomItemResult[i][j] === 1) {
-        element[i][j + moveX] = 1;
+        element[i][j + offset] = 1;
       }
     }
   }
@@ -67,33 +50,16 @@ function updateElement() {
 
 function moveHorizontally() {
   document.addEventListener('keydown', (event) => {
-
     if (event.key === 'ArrowLeft' && !hasConflict(element, leftBorder)) {
-      moveX -= 1;
+      offset -= 1;
       colorGameField();
-      movingItem(moveX);
+      positionItem(offset);
     }
     if (event.key === 'ArrowRight' && !hasConflict(element, rightBorder)) {
-      moveX += 1;
+      offset += 1;
       colorGameField();
-      movingItem(moveX);
+      positionItem(offset);
     }
-
-    // switch (event.key) {
-    //   case 'ArrowLeft':
-    //     moveX -= 1;
-    //     colorGameField();
-    //     movingItem(moveX);
-    //     break;
-    //   case 'ArrowRight':
-    //     moveX += 1;
-    //     colorGameField();
-    //     movingItem(moveX);
-    //     break;
-
-    //   default:
-    //     break;
-    // }
   });
 }
 
@@ -116,38 +82,19 @@ function recolor() {
   }
 }
 
-function resetArr(d1) {
-  for (let i = 0; i < d1.length; i++) {
-    for (let j = 0; j < d1[i].length; j++) {
-      d1[i][j] = 0;
+function resetArr(display1) {
+  for (let i = 0; i < display1.length; i++) {
+    for (let j = 0; j < display1[i].length; j++) {
+      display1[i][j] = 0;
     }
   }
 }
 
 function firstItem() {
   randomItemResult = randomItem();
-  for (let i = 0; i < randomItemResult.length; i++) {
-    for (let j = 0; j < randomItemResult[i].length; j++) {
-      if (randomItemResult[i][j] === 1) {
-        arrCanvas[i][j + 3] = 1;
-      }
-    }
-  }
-  recolor();
-  updateElement();
+  positionItem(initialOffset);
 }
 
-function movingItem() {
-  for (let i = 0; i < randomItemResult.length; i++) {
-    for (let j = 0; j < randomItemResult[i].length; j++) {
-      if (randomItemResult[i][j] === 1) {
-        arrCanvas[i][j + moveX] = 1;
-      }
-    }
-  }
-  recolor();
-  updateElement();
-}
 
 function colorGameField() {
   for (let i = 0; i < rows; i++) {
@@ -158,5 +105,5 @@ function colorGameField() {
   }
 }
 colorGameField();
-firstItem(randomItem());
+firstItem();
 moveHorizontally();
