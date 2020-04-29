@@ -10,7 +10,9 @@ const rectSize = (canvasWidth - columns + 1) / columns;
 const black = '#000000';
 const gray = '#808080';
 let randomItemResult;
-let eventKey = 3;
+let moveX = 3;
+let positionX = 0;
+let positionY = 0;
 
 const items = [
   [
@@ -42,28 +44,56 @@ const items = [
   ],
 ];
 
+function hasConflict(d1, d2) {
+  for (let i = 0; i < d1.length; ++i) {
+    for (let j = 0; j < d1[i].length; ++j) {
+      if (d1[i][j] === 1 && d2[i][j] === 1) {
+        return true;
+      }
+    }
+  }
+}
+
+function updateElement() {
+  resetArr(element);
+  for (let i = 0; i < randomItemResult.length; i++) {
+    for (let j = 0; j < randomItemResult[i].length; j++) {
+      if (randomItemResult[i][j] === 1) {
+        element[i][j + moveX] = 1;
+      }
+    }
+  }
+}
+
 function moveHorizontally() {
   document.addEventListener('keydown', (event) => {
 
-    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-      console.log(event.key);
+    if (event.key === 'ArrowLeft' && !hasConflict(element, leftBorder)) {
+      moveX -= 1;
+      colorGameField();
+      movingItem(moveX);
+    }
+    if (event.key === 'ArrowRight' && !hasConflict(element, rightBorder)) {
+      moveX += 1;
+      colorGameField();
+      movingItem(moveX);
     }
 
-    switch (event.key) {
-      case 'ArrowLeft':
-        eventKey -= 1;
-        colorGameField();
-        movingItem(eventKey);
-        break;
-      case 'ArrowRight':
-        eventKey += 1;
-        colorGameField();
-        movingItem(eventKey);
-        break;
+    // switch (event.key) {
+    //   case 'ArrowLeft':
+    //     moveX -= 1;
+    //     colorGameField();
+    //     movingItem(moveX);
+    //     break;
+    //   case 'ArrowRight':
+    //     moveX += 1;
+    //     colorGameField();
+    //     movingItem(moveX);
+    //     break;
 
-      default:
-        break;
-    }
+    //   default:
+    //     break;
+    // }
   });
 }
 
@@ -86,6 +116,14 @@ function recolor() {
   }
 }
 
+function resetArr(d1) {
+  for (let i = 0; i < d1.length; i++) {
+    for (let j = 0; j < d1[i].length; j++) {
+      d1[i][j] = 0;
+    }
+  }
+}
+
 function firstItem() {
   randomItemResult = randomItem();
   for (let i = 0; i < randomItemResult.length; i++) {
@@ -96,19 +134,19 @@ function firstItem() {
     }
   }
   recolor();
+  updateElement();
 }
 
-function movingItem(moveX) {
+function movingItem() {
   for (let i = 0; i < randomItemResult.length; i++) {
     for (let j = 0; j < randomItemResult[i].length; j++) {
       if (randomItemResult[i][j] === 1) {
         arrCanvas[i][j + moveX] = 1;
-      } else {
-        //arrCanvas[i][j] = 0;
       }
     }
   }
   recolor();
+  updateElement();
 }
 
 function colorGameField() {
