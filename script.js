@@ -10,16 +10,29 @@ const rectSize = (canvasWidth - columns + 1) / columns;
 const black = '#000000';
 const gray = '#808080';
 let randomItemResult;
-let offset = 3;
-let positionX = 0;
-let positionY = 0;
+let offset;
 const initialOffset = 3;
+let offsetVertical = 0;
+
+function setGravity() {
+  offsetVertical = 0;
+  let interval = setInterval(function() {
+    if (!hasConflict(bottomBorder, element)) {
+      resetArr(arrCanvas);
+      positionItem(offset);
+      offsetVertical++
+    } else {
+      clearInterval(interval);
+      console.log('ok');
+    }
+  }, 1000);
+}
 
 function positionItem(positionNumber) {
   for (let i = 0; i < randomItemResult.length; i++) {
     for (let j = 0; j < randomItemResult[i].length; j++) {
       if (randomItemResult[i][j] === 1) {
-        arrCanvas[i][j + positionNumber] = 1;
+        arrCanvas[i + offsetVertical][j + positionNumber] = 1;
       }
     }
   }
@@ -42,7 +55,7 @@ function updateElement() {
   for (let i = 0; i < randomItemResult.length; i++) {
     for (let j = 0; j < randomItemResult[i].length; j++) {
       if (randomItemResult[i][j] === 1) {
-        element[i][j + offset] = 1;
+        element[i + offsetVertical][j + offset] = 1;
       }
     }
   }
@@ -52,12 +65,12 @@ function moveHorizontally() {
   document.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowLeft' && !hasConflict(element, leftBorder)) {
       offset -= 1;
-      colorGameField();
+      setGameField();
       positionItem(offset);
     }
     if (event.key === 'ArrowRight' && !hasConflict(element, rightBorder)) {
       offset += 1;
-      colorGameField();
+      setGameField();
       positionItem(offset);
     }
   });
@@ -92,11 +105,13 @@ function resetArr(display1) {
 
 function firstItem() {
   randomItemResult = randomItem();
+  offset = initialOffset;
   positionItem(initialOffset);
+  setGravity();
 }
 
 
-function colorGameField() {
+function setGameField() {
   for (let i = 0; i < rows; i++) {
     arrCanvas[i] = [];
     for (let j = 0; j < columns; j++) {
@@ -104,6 +119,6 @@ function colorGameField() {
     }
   }
 }
-colorGameField();
+setGameField();
 firstItem();
 moveHorizontally();
