@@ -1,5 +1,6 @@
+//import bottomBorder from 'scriptMatrix.js';
 
-// https://gamedevelopment.tutsplus.com/tutorials/implementing-tetris-collision-detection--gamedev-852
+// import { leftBorder } from './scriptMatrix';
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -15,6 +16,7 @@ let randomItemResult;
 let offset;
 const initialOffset = 3;
 let offsetVertical = 0;
+let horizontalLeftOrRight;
 
 function randomItem() {
   const randomNumber = Math.floor(Math.random() * items.length);
@@ -87,15 +89,21 @@ function updateDisplay(display) {
 
 function moveHorizontally() {
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowLeft' && !hasConflictBorders(element, leftBorder)) {
-      offset -= 1;
-      resetArr(arrCanvas);
-      positionItem(offset);
+    if (event.key === 'ArrowLeft') {
+      horizontalLeftOrRight = -1;
+      if (!hasConflictBorders(element, leftBorder) && !hasConflictItems(element, lines, horizontalLeftOrRight)) {
+        offset -= 1;
+        resetArr(arrCanvas);
+        positionItem(offset);
+      }
     }
-    if (event.key === 'ArrowRight' && !hasConflictBorders(element, rightBorder)) {
-      offset += 1;
-      resetArr(arrCanvas);
-      positionItem(offset);
+    if (event.key === 'ArrowRight') {
+      horizontalLeftOrRight = 1;
+      if (!hasConflictBorders(element, rightBorder) && !hasConflictItems(element, lines, horizontalLeftOrRight)) {
+        offset += 1;
+        resetArr(arrCanvas);
+        positionItem(offset);
+      }
     }
   }, true);
 }
@@ -111,10 +119,10 @@ function hasConflictBorders(display1, display2) {
   return false;
 }
 
-function hasConflictItems(display1, display2) {
+function hasConflictItems(display1, display2, horizontalParameter) {
   for (let i = 0; i < display1.length - 1; ++i) {
     for (let j = 0; j < display1[i].length; ++j) {
-      if (display1[i][j] === 1 && display2[i + 1][j] === 1) {
+      if (display1[i][j] === 1 && display2[i + 1][j + horizontalParameter] === 1) {
         return true;
       }
     }
@@ -124,8 +132,8 @@ function hasConflictItems(display1, display2) {
 
 function setGravity() {
   offsetVertical = 0;
-  let interval = setInterval(function() {
-    if (!hasConflictBorders(bottomBorder, element) && !hasConflictItems(element, lines)) {
+  const interval = setInterval(() => {
+    if (!hasConflictBorders(bottomBorder, element) && !hasConflictItems(element, lines, 0)) {
       if (offsetVertical < element.length - randomItemResult.length) {
         offsetVertical++;
       }
