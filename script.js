@@ -1,3 +1,6 @@
+
+// https://gamedevelopment.tutsplus.com/tutorials/implementing-tetris-collision-detection--gamedev-852
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -84,23 +87,20 @@ function updateDisplay(display) {
 
 function moveHorizontally() {
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowLeft' && !hasConflict(element, leftBorder)) {
+    if (event.key === 'ArrowLeft' && !hasConflictBorders(element, leftBorder)) {
       offset -= 1;
       resetArr(arrCanvas);
       positionItem(offset);
     }
-    if (event.key === 'ArrowRight' && !hasConflict(element, rightBorder)) {
+    if (event.key === 'ArrowRight' && !hasConflictBorders(element, rightBorder)) {
       offset += 1;
       resetArr(arrCanvas);
       positionItem(offset);
     }
-    if (event.key === 'ArrowDown') {
-      moveVertically();
-    }
-  });
+  }, true);
 }
 
-function hasConflict(display1, display2) {
+function hasConflictBorders(display1, display2) {
   for (let i = 0; i < display1.length; ++i) {
     for (let j = 0; j < display1[i].length; ++j) {
       if (display1[i][j] === 1 && display2[i][j] === 1) {
@@ -111,48 +111,58 @@ function hasConflict(display1, display2) {
   return false;
 }
 
-// function setGravity() {
-//   offsetVertical = 0;
-//   let interval = setInterval(function() {
-//     console.log(hasConflict(bottomBorder, element))
-//     console.log(hasConflict(lines, element))
-//     if (!hasConflict(bottomBorder, element) && !hasConflict(lines, element)) {
-//       resetArr(arrCanvas);
-//       positionItem(offset);
-//       if (offsetVertical < element.length - randomItemResult.length) {
-//         offsetVertical++;
-//       }
-//     }
-//     else {
-//     clearInterval(interval);
-//     updateDisplay(lines);
-//     recolorLines(lines);
-//     firstItem();
-//     setGravity();
-//     console.log('OK');
-//     }
-//   }, 200);
-//   }
-offsetVertical = 0;
-function moveVertically() {
-  console.log(hasConflict(bottomBorder, element));
-  console.log(hasConflict(element, lines));
-  if (!hasConflict(bottomBorder, element) && !hasConflict(element, lines)) {
-    resetArr(arrCanvas);
-    positionItem(offset);
-    if (offsetVertical < element.length - randomItemResult.length) {
-      offsetVertical++;
+function hasConflictItems(display1, display2) {
+  for (let i = 0; i < display1.length - 1; ++i) {
+    for (let j = 0; j < display1[i].length; ++j) {
+      if (display1[i][j] === 1 && display2[i + 1][j] === 1) {
+        return true;
+      }
     }
   }
-  else {
-  updateDisplay(lines);
-  recolorLines(lines);
-  firstItem();
-  console.log('OK');
-  }
+  return false;
 }
+
+function setGravity() {
+  offsetVertical = 0;
+  let interval = setInterval(function() {
+    if (!hasConflictBorders(bottomBorder, element) && !hasConflictItems(element, lines)) {
+      if (offsetVertical < element.length - randomItemResult.length) {
+        offsetVertical++;
+      }
+      resetArr(arrCanvas);
+      positionItem(offset);
+    } else {
+      clearInterval(interval);
+      updateDisplay(lines);
+      recolorLines(lines);
+      firstItem();
+      setGravity();
+      console.log('OK');
+    }
+  }, 200);
+}
+
+// offsetVertical = 0;
+// function moveVertically() {
+//   console.log(hasConflictBorders(bottomBorder, element));
+//   console.log(hasConflictItems(element, lines));
+//   if (!hasConflictBorders(bottomBorder, element) && !hasConflictItems(element, lines)) {
+//     if (offsetVertical < element.length - randomItemResult.length) {
+//       offsetVertical++;
+//     }
+//     resetArr(arrCanvas);
+//     positionItem(offset);
+    
+//   }
+//   else {
+//   updateDisplay(lines);
+//   recolorLines(lines);
+//   firstItem();
+//   console.log('OK');
+//   }
+// }
 
 recolor(arrCanvas);
 firstItem();
-//setGravity();
+setGravity();
 moveHorizontally();
