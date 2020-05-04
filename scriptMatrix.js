@@ -1,5 +1,6 @@
-const items = [
-  [
+const figures = {
+
+  items: [[
     [1, 1, 1],
     [0, 1, 0],
   ],
@@ -26,7 +27,12 @@ const items = [
     [1, 1],
     [1, 1],
   ],
-];
+  ],
+  pickRandomItem: function() {
+    const randomNumber = Math.floor(Math.random() * this.items.length);
+    return this.items[randomNumber];
+  },
+};
 
 const leftBorder = [
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],

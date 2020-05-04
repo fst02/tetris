@@ -20,11 +20,6 @@ function init() {
   canvas.height = canvasHeight;
 }
 
-function randomItem() {
-  const randomNumber = Math.floor(Math.random() * items.length);
-  return items[randomNumber];
-}
-
 function resetArr(display) {
   for (let i = 0; i < display.length; i++) {
     for (let j = 0; j < display[i].length; j++) {
@@ -83,7 +78,7 @@ function positionItem() {
 }
 
 function firstItem() {
-  randomItemResult = randomItem();
+  randomItemResult = figures.pickRandomItem();
   offsetVertical = 0;
   offsetHorizontal = 3;
   positionItem();
