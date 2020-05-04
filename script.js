@@ -16,7 +16,7 @@ let randomItemResult;
 let offset;
 const initialOffset = 3;
 let offsetVertical = 0;
-let horizontalLeftOrRight;
+let horizontalLeftOrRight = 0;
 
 function randomItem() {
   const randomNumber = Math.floor(Math.random() * items.length);
@@ -75,6 +75,9 @@ function positionItem(positionNumber) {
   recolorLines(lines);
   resetArr(element);
   updateDisplay(element);
+  if (hasConflictItems(element, lines, horizontalLeftOrRight) && checkGameOver()) {
+
+  }
 }
 
 function updateDisplay(display) {
@@ -85,6 +88,15 @@ function updateDisplay(display) {
       }
     }
   }
+}
+
+function checkGameOver() {
+  for (let i = 0; i < lines[0].length; i++) {
+    if (lines[0][i] === 1) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function moveHorizontally() {
@@ -144,10 +156,14 @@ function setGravity() {
       updateDisplay(lines);
       recolorLines(lines);
       firstItem();
-      setGravity();
-      console.log('OK');
+      if (checkGameOver()) {
+        document.getElementById('gameOverMessage').innerHTML = 'Game Over';
+      } else {
+        setGravity();
+        console.log('OK');
+      }
     }
-  }, 200);
+  }, 20);
 }
 
 // offsetVertical = 0;
