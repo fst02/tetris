@@ -1,11 +1,9 @@
-//import bottomBorder from 'scriptMatrix.js';
-
+// import bottomBorder from 'scriptMatrix.js';
 // import { leftBorder } from './scriptMatrix';
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-const rows = 20;
 const columns = 10;
 const canvasWidth = 209;
 const canvasHeight = 419;
@@ -13,10 +11,14 @@ const rectSize = (canvasWidth - columns + 1) / columns;
 const black = '#000000';
 const gray = '#808080';
 let randomItemResult;
-let offset;
-const initialOffset = 3;
+let offsetHorizontal;
 let offsetVertical = 0;
 let horizontalLeftOrRight = 0;
+
+function init() {
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
+}
 
 function randomItem() {
   const randomNumber = Math.floor(Math.random() * items.length);
@@ -56,18 +58,21 @@ function recolorLines(display) {
   }
 }
 
-function firstItem() {
-  randomItemResult = randomItem();
-  offsetVertical = 0;
-  offset = initialOffset;
-  positionItem(initialOffset);
-}
-
-function positionItem(positionNumber) {
+function updateDisplay(display) {
   for (let i = 0; i < randomItemResult.length; i++) {
     for (let j = 0; j < randomItemResult[i].length; j++) {
       if (randomItemResult[i][j] === 1) {
-        arrCanvas[i + offsetVertical][j + positionNumber] = 1;
+        display[i + offsetVertical][j + offsetHorizontal] = 1;
+      }
+    }
+  }
+}
+
+function positionItem() {
+  for (let i = 0; i < randomItemResult.length; i++) {
+    for (let j = 0; j < randomItemResult[i].length; j++) {
+      if (randomItemResult[i][j] === 1) {
+        arrCanvas[i + offsetVertical][j + offsetHorizontal] = 1;
       }
     }
   }
@@ -75,19 +80,13 @@ function positionItem(positionNumber) {
   recolorLines(lines);
   resetArr(element);
   updateDisplay(element);
-  if (hasConflictItems(element, lines, horizontalLeftOrRight) && checkGameOver()) {
-
-  }
 }
 
-function updateDisplay(display) {
-  for (let i = 0; i < randomItemResult.length; i++) {
-    for (let j = 0; j < randomItemResult[i].length; j++) {
-      if (randomItemResult[i][j] === 1) {
-        display[i + offsetVertical][j + offset] = 1;
-      }
-    }
-  }
+function firstItem() {
+  randomItemResult = randomItem();
+  offsetVertical = 0;
+  offsetHorizontal = 3;
+  positionItem();
 }
 
 function checkGameOver() {
@@ -97,27 +96,6 @@ function checkGameOver() {
     }
   }
   return false;
-}
-
-function moveHorizontally() {
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowLeft') {
-      horizontalLeftOrRight = -1;
-      if (!hasConflictBorders(element, leftBorder) && !hasConflictItems(element, lines, horizontalLeftOrRight)) {
-        offset -= 1;
-        resetArr(arrCanvas);
-        positionItem(offset);
-      }
-    }
-    if (event.key === 'ArrowRight') {
-      horizontalLeftOrRight = 1;
-      if (!hasConflictBorders(element, rightBorder) && !hasConflictItems(element, lines, horizontalLeftOrRight)) {
-        offset += 1;
-        resetArr(arrCanvas);
-        positionItem(offset);
-      }
-    }
-  }, true);
 }
 
 function hasConflictBorders(display1, display2) {
@@ -142,15 +120,39 @@ function hasConflictItems(display1, display2, horizontalParameter) {
   return false;
 }
 
+function moveHorizontally() {
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') {
+      horizontalLeftOrRight = -1;
+      if (!hasConflictBorders(element, leftBorder)
+        && !hasConflictItems(element, lines, horizontalLeftOrRight)) {
+        offsetHorizontal -= 1;
+        resetArr(arrCanvas);
+        positionItem(offsetHorizontal);
+      }
+    }
+    if (event.key === 'ArrowRight') {
+      horizontalLeftOrRight = 1;
+      if (!hasConflictBorders(element, rightBorder) 
+        && !hasConflictItems(element, lines, horizontalLeftOrRight)) {
+        offsetHorizontal += 1;
+        resetArr(arrCanvas);
+        positionItem(offsetHorizontal);
+      }
+    }
+  }, true);
+}
+
 function setGravity() {
   offsetVertical = 0;
   const interval = setInterval(() => {
-    if (!hasConflictBorders(bottomBorder, element) && !hasConflictItems(element, lines, 0)) {
+    if (!hasConflictBorders(bottomBorder, element)
+      && !hasConflictItems(element, lines, horizontalLeftOrRight)) {
       if (offsetVertical < element.length - randomItemResult.length) {
         offsetVertical++;
       }
       resetArr(arrCanvas);
-      positionItem(offset);
+      positionItem(offsetHorizontal);
     } else {
       clearInterval(interval);
       updateDisplay(lines);
@@ -160,32 +162,12 @@ function setGravity() {
         document.getElementById('gameOverMessage').innerHTML = 'Game Over';
       } else {
         setGravity();
-        console.log('OK');
       }
     }
   }, 20);
 }
 
-// offsetVertical = 0;
-// function moveVertically() {
-//   console.log(hasConflictBorders(bottomBorder, element));
-//   console.log(hasConflictItems(element, lines));
-//   if (!hasConflictBorders(bottomBorder, element) && !hasConflictItems(element, lines)) {
-//     if (offsetVertical < element.length - randomItemResult.length) {
-//       offsetVertical++;
-//     }
-//     resetArr(arrCanvas);
-//     positionItem(offset);
-    
-//   }
-//   else {
-//   updateDisplay(lines);
-//   recolorLines(lines);
-//   firstItem();
-//   console.log('OK');
-//   }
-// }
-
+init();
 recolor(arrCanvas);
 firstItem();
 setGravity();
