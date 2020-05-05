@@ -1,12 +1,4 @@
-import {
-  figures,
-  leftBorder,
-  rightBorder,
-  bottomBorder,
-  element,
-  lines,
-  arrCanvas,
-} from './scriptMatrix.js';
+import defaultExport from './src/model.js';
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -74,26 +66,26 @@ function positionItem() {
   for (let i = 0; i < randomItemResult.length; i++) {
     for (let j = 0; j < randomItemResult[i].length; j++) {
       if (randomItemResult[i][j] === 1) {
-        arrCanvas[i + offsetVertical][j + offsetHorizontal] = 1;
+        defaultExport.arrCanvas[i + offsetVertical][j + offsetHorizontal] = 1;
       }
     }
   }
-  recolor(arrCanvas);
-  recolorLines(lines);
-  resetArr(element);
-  updateDisplay(element);
+  recolor(defaultExport.arrCanvas);
+  recolorLines(defaultExport.lines);
+  resetArr(defaultExport.element);
+  updateDisplay(defaultExport.element);
 }
 
 function firstItem() {
-  randomItemResult = figures.pickRandomItem();
+  randomItemResult = defaultExport.figures.pickRandomItem();
   offsetVertical = 0;
   offsetHorizontal = 3;
   positionItem();
 }
 
 function checkGameOver() {
-  for (let i = 0; i < lines[0].length; i++) {
-    if (lines[0][i] === 1) {
+  for (let i = 0; i < defaultExport.lines[0].length; i++) {
+    if (defaultExport.lines[0][i] === 1) {
       return true;
     }
   }
@@ -126,19 +118,19 @@ function moveHorizontally() {
   document.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowLeft') {
       horizontalLeftOrRight = -1;
-      if (!hasConflictBorders(element, leftBorder)
-        && !hasConflictItems(element, lines, horizontalLeftOrRight)) {
+      if (!hasConflictBorders(defaultExport.element, defaultExport.leftBorder)
+        && !hasConflictItems(defaultExport.element, defaultExport.lines, horizontalLeftOrRight)) {
         offsetHorizontal -= 1;
-        resetArr(arrCanvas);
+        resetArr(defaultExport.arrCanvas);
         positionItem(offsetHorizontal);
       }
     }
     if (event.key === 'ArrowRight') {
       horizontalLeftOrRight = 1;
-      if (!hasConflictBorders(element, rightBorder) 
-        && !hasConflictItems(element, lines, horizontalLeftOrRight)) {
+      if (!hasConflictBorders(defaultExport.element, defaultExport.rightBorder)
+        && !hasConflictItems(defaultExport.element, defaultExport.lines, horizontalLeftOrRight)) {
         offsetHorizontal += 1;
-        resetArr(arrCanvas);
+        resetArr(defaultExport.arrCanvas);
         positionItem(offsetHorizontal);
       }
     }
@@ -148,17 +140,17 @@ function moveHorizontally() {
 function setGravity() {
   offsetVertical = 0;
   const interval = setInterval(() => {
-    if (!hasConflictBorders(bottomBorder, element)
-      && !hasConflictItems(element, lines, horizontalLeftOrRight)) {
-      if (offsetVertical < element.length - randomItemResult.length) {
+    if (!hasConflictBorders(defaultExport.bottomBorder, defaultExport.element)
+      && !hasConflictItems(defaultExport.element, defaultExport.lines, horizontalLeftOrRight)) {
+      if (offsetVertical < defaultExport.element.length - randomItemResult.length) {
         offsetVertical++;
       }
-      resetArr(arrCanvas);
+      resetArr(defaultExport.arrCanvas);
       positionItem(offsetHorizontal);
     } else {
       clearInterval(interval);
-      updateDisplay(lines);
-      recolorLines(lines);
+      updateDisplay(defaultExport.lines);
+      recolorLines(defaultExport.lines);
       firstItem();
       if (checkGameOver()) {
         document.getElementById('gameOverMessage').innerHTML = 'Game Over';
@@ -170,7 +162,7 @@ function setGravity() {
 }
 
 init();
-recolor(arrCanvas);
+recolor(defaultExport.arrCanvas);
 firstItem();
 setGravity();
 moveHorizontally();
