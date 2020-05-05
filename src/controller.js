@@ -1,3 +1,7 @@
+import model from './model.js';
+import view from './view.js';
+
+
 const controller = {
   resetArr(display) {
     for (let i = 0; i < display.length; i++) {
@@ -5,11 +9,6 @@ const controller = {
         display[i][j] = 0;
       }
     }
-  },
-  init() {
-    const canvas = document.getElementById('canvas');
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
   },
   updateDisplay(display) {
     for (let i = 0; i < randomItemResult.length; i++) {
@@ -24,24 +23,24 @@ const controller = {
     for (let i = 0; i < randomItemResult.length; i++) {
       for (let j = 0; j < randomItemResult[i].length; j++) {
         if (randomItemResult[i][j] === 1) {
-          defaultExport.arrCanvas[i + offsetVertical][j + offsetHorizontal] = 1;
+          model.arrCanvas[i + offsetVertical][j + offsetHorizontal] = 1;
         }
       }
     }
-    recolor(defaultExport.arrCanvas);
-    recolorLines(defaultExport.lines);
-    controller.resetArr(defaultExport.element);
-    updateDisplay(defaultExport.element);
+    view.recolor(model.arrCanvas);
+    view.recolor(model.lines);
+    controller.resetArr(model.element);
+    updateDisplay(model.element);
   },
   newItem() {
-    randomItemResult = defaultExport.figures.pickRandomItem();
+    randomItemResult = model.figures.pickRandomItem();
     offsetVertical = 0;
     offsetHorizontal = 3;
     positionItem();
   },
   checkGameOver() {
-    for (let i = 0; i < defaultExport.lines[0].length; i++) {
-      if (defaultExport.lines[0][i] === 1) {
+    for (let i = 0; i < model.lines[0].length; i++) {
+      if (model.lines[0][i] === 1) {
         return true;
       }
     }
@@ -71,19 +70,19 @@ const controller = {
     document.addEventListener('keydown', (event) => {
       if (event.key === 'ArrowLeft') {
         horizontalLeftOrRight = -1;
-        if (!hasConflictBorders(defaultExport.element, defaultExport.leftBorder)
-          && !hasConflictItems(defaultExport.element, defaultExport.lines, horizontalLeftOrRight)) {
+        if (!hasConflictBorders(model.element, model.leftBorder)
+          && !hasConflictItems(model.element, model.lines, horizontalLeftOrRight)) {
           offsetHorizontal -= 1;
-          controller.resetArr(defaultExport.arrCanvas);
+          controller.resetArr(model.arrCanvas);
           positionItem(offsetHorizontal);
         }
       }
       if (event.key === 'ArrowRight') {
         horizontalLeftOrRight = 1;
-        if (!hasConflictBorders(defaultExport.element, defaultExport.rightBorder)
-          && !hasConflictItems(defaultExport.element, defaultExport.lines, horizontalLeftOrRight)) {
+        if (!hasConflictBorders(model.element, model.rightBorder)
+          && !hasConflictItems(model.element, model.lines, horizontalLeftOrRight)) {
           offsetHorizontal += 1;
-          controller.resetArr(defaultExport.arrCanvas);
+          controller.resetArr(model.arrCanvas);
           positionItem(offsetHorizontal);
         }
       }
@@ -92,17 +91,17 @@ const controller = {
   setGravity() {
     offsetVertical = 0;
     const interval = setInterval(() => {
-      if (!hasConflictBorders(defaultExport.bottomBorder, defaultExport.element)
-        && !hasConflictItems(defaultExport.element, defaultExport.lines, horizontalLeftOrRight)) {
-        if (offsetVertical < defaultExport.element.length - randomItemResult.length) {
+      if (!hasConflictBorders(model.bottomBorder, model.element)
+        && !hasConflictItems(model.element, model.lines, horizontalLeftOrRight)) {
+        if (offsetVertical < model.element.length - randomItemResult.length) {
           offsetVertical++;
         }
-        controller.resetArr(defaultExport.arrCanvas);
+        controller.resetArr(model.arrCanvas);
         positionItem(offsetHorizontal);
       } else {
         clearInterval(interval);
-        updateDisplay(defaultExport.lines);
-        recolorLines(defaultExport.lines);
+        updateDisplay(model.lines);
+        view.recolor(model.lines);
         newItem();
         if (checkGameOver()) {
           document.getElementById('gameOverMessage').innerHTML = 'Game Over';
