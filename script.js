@@ -1,5 +1,12 @@
-// import bottomBorder from 'scriptMatrix.js';
-// import { leftBorder } from './scriptMatrix';
+import {
+  figures,
+  leftBorder,
+  rightBorder,
+  bottomBorder,
+  element,
+  lines,
+  arrCanvas,
+} from './scriptMatrix.js';
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');

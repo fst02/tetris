@@ -28,7 +28,7 @@ const figures = {
     [1, 1],
   ],
   ],
-  pickRandomItem: function() {
+  pickRandomItem() {
     const randomNumber = Math.floor(Math.random() * this.items.length);
     return this.items[randomNumber];
   },
@@ -172,4 +172,12 @@ const arrCanvas = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
 
-// export { leftBorder };
+export {
+  figures,
+  leftBorder,
+  rightBorder,
+  bottomBorder,
+  element,
+  lines,
+  arrCanvas,
+};
