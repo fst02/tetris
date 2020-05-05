@@ -7,6 +7,17 @@ const controller = {
   offsetVertical: 0,
   horizontalLeftOrRight: 0,
 
+  mergeMatrixes(matrix1, matrix2) {
+    for (let i = 0; i < model.linesWithElement.length; i++) {
+      for (let j = 0; j < model.linesWithElement[i].length; j++) {
+        if (matrix1[i][j] === 1 || matrix2[i][j] === 1) {
+          model.linesWithElement[i][j] = 1;
+        } else {
+          model.linesWithElement[i][j] = 0;
+        }
+      }
+    } return this.linesWithElement;
+  },
   resetArr(display) {
     for (let i = 0; i < display.length; i++) {
       for (let j = 0; j < display[i].length; j++) {
@@ -24,15 +35,8 @@ const controller = {
     }
   },
   positionItem() {
-    for (let i = 0; i < this.randomItemResult.length; i++) {
-      for (let j = 0; j < this.randomItemResult[i].length; j++) {
-        if (this.randomItemResult[i][j] === 1) {
-          model.arrCanvas[i + this.offsetVertical][j + this.offsetHorizontal] = 1;
-        }
-      }
-    }
-    view.recolor(model.arrCanvas);
-    view.recolor(model.lines);
+    this.mergeMatrixes(model.lines, model.element);
+    view.recolor(model.linesWithElement);
     this.resetArr(model.element);
     this.updateDisplay(model.element);
   },
@@ -40,6 +44,13 @@ const controller = {
     this.randomItemResult = model.figures.pickRandomItem();
     this.offsetVertical = 0;
     this.offsetHorizontal = 3;
+    for (let i = 0; i < this.randomItemResult.length; i++) {
+      for (let j = 0; j < this.randomItemResult[i].length; j++) {
+        if (this.randomItemResult[i][j] === 1) {
+          model.linesWithElement[i + this.offsetVertical][j + this.offsetHorizontal] = 1;
+        }
+      }
+    }
     this.positionItem();
   },
   checkGameOver() {
@@ -51,8 +62,8 @@ const controller = {
     return false;
   },
   hasConflictBorders(display1, display2) {
-    for (let i = 0; i < display1.length; ++i) {
-      for (let j = 0; j < display1[i].length; ++j) {
+    for (let i = 0; i < display1.length; i++) {
+      for (let j = 0; j < display1[i].length; j++) {
         if (display1[i][j] === 1 && display2[i][j] === 1) {
           return true;
         }
@@ -61,8 +72,8 @@ const controller = {
     return false;
   },
   hasConflictItems(display1, display2, horizontalParameter) {
-    for (let i = 0; i < display1.length - 1; ++i) {
-      for (let j = 0; j < display1[i].length; ++j) {
+    for (let i = 0; i < display1.length - 1; i++) {
+      for (let j = 0; j < display1[i].length; j++) {
         if (display1[i][j] === 1 && display2[i + 1][j + horizontalParameter] === 1) {
           return true;
         }
@@ -77,7 +88,7 @@ const controller = {
         if (!this.hasConflictBorders(model.element, model.leftBorder)
           && !this.hasConflictItems(model.element, model.lines, this.horizontalLeftOrRight)) {
           this.offsetHorizontal -= 1;
-          controller.resetArr(model.arrCanvas);
+          controller.resetArr(model.linesWithElement);
           this.positionItem(this.offsetHorizontal);
         }
       }
@@ -86,7 +97,7 @@ const controller = {
         if (!this.hasConflictBorders(model.element, model.rightBorder)
           && !this.hasConflictItems(model.element, model.lines, this.horizontalLeftOrRight)) {
           this.offsetHorizontal += 1;
-          controller.resetArr(model.arrCanvas);
+          controller.resetArr(model.linesWithElement);
           this.positionItem(this.offsetHorizontal);
         }
       }
@@ -100,12 +111,12 @@ const controller = {
         if (this.offsetVertical < model.element.length - this.randomItemResult.length) {
           this.offsetVertical++;
         }
-        controller.resetArr(model.arrCanvas);
         this.positionItem(this.offsetHorizontal);
       } else {
         clearInterval(interval);
         this.updateDisplay(model.lines);
-        view.recolor(model.lines);
+        this.updateDisplay(model.linesWithElement);
+        this.mergeMatrixes(model.lines, model.element);
         this.newItem();
         if (this.checkGameOver()) {
           document.getElementById('gameOverMessage').innerHTML = 'Game Over';
@@ -113,10 +124,8 @@ const controller = {
           this.setGravity();
         }
       }
-    }, 20);
+    }, 200);
   },
 };
-view.init();
-view.recolor(model.arrCanvas);
 
 export default controller;
