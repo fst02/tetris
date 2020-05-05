@@ -1,8 +1,12 @@
 import model from './model.js';
 import view from './view.js';
 
-
 const controller = {
+  randomItemResult: null,
+  offsetHorizontal: null,
+  offsetVertical: 0,
+  horizontalLeftOrRight: 0,
+
   resetArr(display) {
     for (let i = 0; i < display.length; i++) {
       for (let j = 0; j < display[i].length; j++) {
@@ -11,32 +15,32 @@ const controller = {
     }
   },
   updateDisplay(display) {
-    for (let i = 0; i < randomItemResult.length; i++) {
-      for (let j = 0; j < randomItemResult[i].length; j++) {
-        if (randomItemResult[i][j] === 1) {
-          display[i + offsetVertical][j + offsetHorizontal] = 1;
+    for (let i = 0; i < this.randomItemResult.length; i++) {
+      for (let j = 0; j < this.randomItemResult[i].length; j++) {
+        if (this.randomItemResult[i][j] === 1) {
+          display[i + this.offsetVertical][j + this.offsetHorizontal] = 1;
         }
       }
     }
   },
   positionItem() {
-    for (let i = 0; i < randomItemResult.length; i++) {
-      for (let j = 0; j < randomItemResult[i].length; j++) {
-        if (randomItemResult[i][j] === 1) {
-          model.arrCanvas[i + offsetVertical][j + offsetHorizontal] = 1;
+    for (let i = 0; i < this.randomItemResult.length; i++) {
+      for (let j = 0; j < this.randomItemResult[i].length; j++) {
+        if (this.randomItemResult[i][j] === 1) {
+          model.arrCanvas[i + this.offsetVertical][j + this.offsetHorizontal] = 1;
         }
       }
     }
     view.recolor(model.arrCanvas);
     view.recolor(model.lines);
-    controller.resetArr(model.element);
-    updateDisplay(model.element);
+    this.resetArr(model.element);
+    this.updateDisplay(model.element);
   },
   newItem() {
-    randomItemResult = model.figures.pickRandomItem();
-    offsetVertical = 0;
-    offsetHorizontal = 3;
-    positionItem();
+    this.randomItemResult = model.figures.pickRandomItem();
+    this.offsetVertical = 0;
+    this.offsetHorizontal = 3;
+    this.positionItem();
   },
   checkGameOver() {
     for (let i = 0; i < model.lines[0].length; i++) {
@@ -66,51 +70,53 @@ const controller = {
     }
     return false;
   },
-  functimoveHorizontally() {
+  moveHorizontally() {
     document.addEventListener('keydown', (event) => {
       if (event.key === 'ArrowLeft') {
-        horizontalLeftOrRight = -1;
-        if (!hasConflictBorders(model.element, model.leftBorder)
-          && !hasConflictItems(model.element, model.lines, horizontalLeftOrRight)) {
-          offsetHorizontal -= 1;
+        this.horizontalLeftOrRight = -1;
+        if (!this.hasConflictBorders(model.element, model.leftBorder)
+          && !this.hasConflictItems(model.element, model.lines, this.horizontalLeftOrRight)) {
+          this.offsetHorizontal -= 1;
           controller.resetArr(model.arrCanvas);
-          positionItem(offsetHorizontal);
+          this.positionItem(this.offsetHorizontal);
         }
       }
       if (event.key === 'ArrowRight') {
-        horizontalLeftOrRight = 1;
-        if (!hasConflictBorders(model.element, model.rightBorder)
-          && !hasConflictItems(model.element, model.lines, horizontalLeftOrRight)) {
-          offsetHorizontal += 1;
+        this.horizontalLeftOrRight = 1;
+        if (!this.hasConflictBorders(model.element, model.rightBorder)
+          && !this.hasConflictItems(model.element, model.lines, this.horizontalLeftOrRight)) {
+          this.offsetHorizontal += 1;
           controller.resetArr(model.arrCanvas);
-          positionItem(offsetHorizontal);
+          this.positionItem(this.offsetHorizontal);
         }
       }
     }, true);
   },
   setGravity() {
-    offsetVertical = 0;
+    this.offsetVertical = 0;
     const interval = setInterval(() => {
-      if (!hasConflictBorders(model.bottomBorder, model.element)
-        && !hasConflictItems(model.element, model.lines, horizontalLeftOrRight)) {
-        if (offsetVertical < model.element.length - randomItemResult.length) {
-          offsetVertical++;
+      if (!this.hasConflictBorders(model.bottomBorder, model.element)
+        && !this.hasConflictItems(model.element, model.lines, this.horizontalLeftOrRight)) {
+        if (this.offsetVertical < model.element.length - this.randomItemResult.length) {
+          this.offsetVertical++;
         }
         controller.resetArr(model.arrCanvas);
-        positionItem(offsetHorizontal);
+        this.positionItem(this.offsetHorizontal);
       } else {
         clearInterval(interval);
-        updateDisplay(model.lines);
+        this.updateDisplay(model.lines);
         view.recolor(model.lines);
-        newItem();
-        if (checkGameOver()) {
+        this.newItem();
+        if (this.checkGameOver()) {
           document.getElementById('gameOverMessage').innerHTML = 'Game Over';
         } else {
-          setGravity();
+          this.setGravity();
         }
       }
     }, 20);
   },
 };
+view.init();
+view.recolor(model.arrCanvas);
 
 export default controller;

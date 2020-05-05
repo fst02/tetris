@@ -1,4 +1,4 @@
-export default {
+const model = {
   figures: {
     items: [
       [
@@ -173,3 +173,5 @@ export default {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ],
 };
+
+export default model;

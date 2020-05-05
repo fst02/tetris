@@ -1,15 +1,22 @@
-export default {
+const view = {
   columns: 10,
-  rectangleSize: (this.canvasWidth - this.columns + 1) / this.columns,
   itemColor: '#000000',
   backgroundColor: '#808080',
   canvasWidth: 209,
   canvasHeight: 419,
-  canvas: document.getElementById('canvas'),
-  context: this.canvas.getContext('2d'),
+
+  getRectangleSize() {
+    return (this.canvasWidth - this.columns + 1) / this.columns;
+  },
+  getContext() {
+    return this.getCanvas().getContext('2d');
+  },
+  getCanvas() {
+    return document.getElementById('canvas');
+  },
   init() {
-    this.canvas.width = this.canvasWidth;
-    this.canvas.height = this.canvasHeight;
+    this.getCanvas().width = this.canvasWidth;
+    this.getCanvas().height = this.canvasHeight;
   },
   recolor(display) {
     for (let i = 0; i < display.length; i++) {
@@ -23,12 +30,16 @@ export default {
     }
   },
   colorRectangle(row, column, color) {
-    this.context.fillStyle = color;
-    this.context.fillRect(
-      column * (this.rectangleSize + 1),
-      row * (this.rectangleSize + 1),
-      this.rectangleSize,
-      this.rectangleSize,
+    const context = this.getContext();
+    const rectangleSize = this.getRectangleSize();
+    context.fillStyle = color;
+    context.fillRect(
+      column * (rectangleSize + 1),
+      row * (rectangleSize + 1),
+      rectangleSize,
+      rectangleSize,
     );
   },
 };
+
+export default view;
