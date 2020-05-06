@@ -103,6 +103,27 @@ const controller = {
       }
     }, true);
   },
+  clearCompleteLine(row) {
+    for (let i = row; i >= 1; i--) {
+      console.log(i);
+      for (let j = 0; j < model.lines[i].length; j++) {
+        model.lines[i][j] = model.lines[i - 1][j];
+      }
+    }
+  },
+  isLineComplete() {
+    for (let i = 0; i < model.linesWithElement.length; i++) {
+      let lineID = i;
+      for (let j = 0; j < model.linesWithElement[i].length; j++) {
+        if (model.linesWithElement[i][j] === 0) {
+          lineID = -1;
+        }
+      }
+      if (lineID !== -1) {
+        this.clearCompleteLine(lineID);
+      }
+    }
+  },
   setGravity() {
     this.offsetVertical = 0;
     const interval = setInterval(() => {
@@ -117,6 +138,7 @@ const controller = {
         this.updateDisplay(model.lines);
         this.updateDisplay(model.linesWithElement);
         this.mergeMatrixes(model.lines, model.element);
+        this.isLineComplete();
         this.newItem();
         if (this.checkGameOver()) {
           document.getElementById('gameOverMessage').innerHTML = 'Game Over';
