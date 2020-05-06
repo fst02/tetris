@@ -5,5 +5,6 @@ import model from './src/model.js';
 controller.newItem();
 controller.setGravity();
 controller.moveHorizontally();
+controller.moveVertically();
 view.init();
 view.recolor(model.linesWithElement);

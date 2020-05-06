@@ -6,6 +6,8 @@ const controller = {
   offsetHorizontal: null,
   offsetVertical: 0,
   horizontalLeftOrRight: 0,
+  dropSpeed: 1000,
+  interval: null,
 
   mergeMatrixes(matrix1, matrix2) {
     for (let i = 0; i < model.linesWithElement.length; i++) {
@@ -41,6 +43,7 @@ const controller = {
     this.updateDisplay(model.element);
   },
   newItem() {
+    this.dropSpeed = 1000;
     this.randomItemResult = model.figures.pickRandomItem();
     this.offsetVertical = 0;
     this.offsetHorizontal = 3;
@@ -103,9 +106,17 @@ const controller = {
       }
     }, true);
   },
+  moveVertically() {
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowDown') {
+        this.dropSpeed = 10;
+        clearInterval(this.interval);
+        this.setGravity();
+      }
+    });
+  },
   clearCompleteLine(row) {
     for (let i = row; i >= 1; i--) {
-      console.log(i);
       for (let j = 0; j < model.lines[i].length; j++) {
         model.lines[i][j] = model.lines[i - 1][j];
       }
@@ -125,8 +136,7 @@ const controller = {
     }
   },
   setGravity() {
-    this.offsetVertical = 0;
-    const interval = setInterval(() => {
+    this.interval = setInterval(() => {
       if (!this.hasConflictBorders(model.bottomBorder, model.element)
         && !this.hasConflictItems(model.element, model.lines, 0)) {
         if (this.offsetVertical < model.element.length - this.randomItemResult.length) {
@@ -134,7 +144,7 @@ const controller = {
         }
         this.positionItem(this.offsetHorizontal);
       } else {
-        clearInterval(interval);
+        clearInterval(this.interval);
         this.updateDisplay(model.lines);
         this.updateDisplay(model.linesWithElement);
         this.mergeMatrixes(model.lines, model.element);
@@ -144,9 +154,10 @@ const controller = {
           document.getElementById('gameOverMessage').innerHTML = 'Game Over';
         } else {
           this.setGravity();
+          this.offsetVertical = 0;
         }
       }
-    }, 200);
+    }, this.dropSpeed);
   },
 };
 
