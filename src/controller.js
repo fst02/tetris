@@ -107,7 +107,7 @@ const controller = {
     this.offsetVertical = 0;
     const interval = setInterval(() => {
       if (!this.hasConflictBorders(model.bottomBorder, model.element)
-        && !this.hasConflictItems(model.element, model.lines, this.horizontalLeftOrRight)) {
+        && !this.hasConflictItems(model.element, model.lines, 0)) {
         if (this.offsetVertical < model.element.length - this.randomItemResult.length) {
           this.offsetVertical++;
         }
