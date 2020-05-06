@@ -8,6 +8,7 @@ const controller = {
   horizontalLeftOrRight: 0,
   dropSpeed: 1000,
   interval: null,
+  player: null,
 
   mergeMatrixes(matrix1, matrix2) {
     for (let i = 0; i < model.linesWithElement.length; i++) {
@@ -135,6 +136,23 @@ const controller = {
       }
     }
   },
+  getValueOrDefault(message, defaultValue) {
+    const temp = prompt(message, defaultValue);
+    if (temp == null) {
+      return defaultValue;
+    }
+    return temp;
+  },
+  setUser() {
+    this.player = window.localStorage.getItem('userName');
+    if (this.player == null) {
+      this.player = this.getValueOrDefault('Please choose a name: ', 'Anonymous');
+    } else {
+      this.player = this.getValueOrDefault('Please change your name, if you wish: ', this.player);
+    }
+    window.localStorage.setItem('userName', this.player);
+    document.getElementById('welcomeUser').innerHTML = `Welcome ${this.player} !`;
+  },
   setGravity() {
     this.interval = setInterval(() => {
       if (!this.hasConflictBorders(model.bottomBorder, model.element)
@@ -152,6 +170,7 @@ const controller = {
         this.newItem();
         if (this.checkGameOver()) {
           document.getElementById('gameOverMessage').innerHTML = 'Game Over';
+          this.setUser();
         } else {
           this.setGravity();
           this.offsetVertical = 0;
