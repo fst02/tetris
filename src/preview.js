@@ -1,10 +1,11 @@
-const view = {
-  columns: 10,
+const preview = {
+  columns: 4,
   itemColor: '#000000',
-  backgroundColor: '#808080',
-  canvasWidth: 209,
-  canvasHeight: 419,
-
+  backgroundColor: '#FFFFFF',
+  canvasWidth: 84,
+  canvasHeight: 42,
+  item: null,
+  
   getRectangleSize(width, columns) {
     return (width - columns + 1) / columns;
   },
@@ -12,7 +13,7 @@ const view = {
     return this.getCanvas().getContext('2d');
   },
   getCanvas() {
-    return document.getElementById('canvas');
+    return document.getElementById('canvasNextElement');
   },
   init() {
     this.getCanvas().width = this.canvasWidth;
@@ -42,4 +43,4 @@ const view = {
   },
 };
 
-export default view;
+export default preview;

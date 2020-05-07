@@ -1,5 +1,6 @@
 import model from './model.js';
 import view from './view.js';
+import preview from './preview.js';
 
 const controller = {
   randomItemResult: null,
@@ -12,7 +13,7 @@ const controller = {
 
   startGame() {
     const handler = () => {
-      this.newItem();
+      this.loadNewItemToGamefield();
       this.setGravity();
       this.welcomeUser();
       this.moveHorizontally();
@@ -54,9 +55,23 @@ const controller = {
     this.resetArr(model.element);
     this.updateDisplay(model.element);
   },
-  newItem() {
+  createNewItemForPreview() {
+    const newItem = model.figures.pickRandomItem();
+    this.resetArr(model.nextElement);
+    preview.recolor(model.nextElement);
+    model.storeNextElement(newItem);
+    preview.recolor(newItem);
+    preview.item = newItem;
+  },
+
+  getItemFromPreview() {
+    return preview.item;
+  },
+
+  loadNewItemToGamefield() {
     this.dropSpeed = 1000;
-    this.randomItemResult = model.figures.pickRandomItem();
+    this.randomItemResult = this.getItemFromPreview();
+    this.createNewItemForPreview();
     this.offsetVertical = 0;
     this.offsetHorizontal = 3;
     for (let i = 0; i < this.randomItemResult.length; i++) {
@@ -182,7 +197,7 @@ const controller = {
         this.updateDisplay(model.linesWithElement);
         this.mergeMatrixes(model.lines, model.element);
         this.isLineComplete();
-        this.newItem();
+        this.loadNewItemToGamefield();
         if (this.checkGameOver()) {
           document.getElementById('gameOverMessage').innerHTML = 'Game Over';
           this.setUser();

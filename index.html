@@ -8,13 +8,17 @@
     <script lang="javascript" type="module" src="./src/model.js" defer></script>
     <script lang="javascript" type="module" src="./src/controller.js" defer></script>
     <script lang="javascript" type="module" src="./src/view.js" defer></script>
+    <script lang="javascript" type="module" src="./src/preview.js" defer></script>
     <script lang="javascript" type="module" src="script.js" defer></script>
     <title>Tetris</title>
 </head>
 
 <body>
-    <div id="canvasContainer">
+    <div id='nextElementContainer'>
         <div id="welcomeUser"></div>
+        <canvas id='canvasNextElement'></canvas>
+    </div>
+    <div id="canvasContainer">
         <canvas id="canvas"></canvas>
     </div>
     <div id="startContainer">

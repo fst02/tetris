@@ -34,6 +34,21 @@ const model = {
       return this.items[randomNumber];
     },
   },
+  nextElement: [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ],
+  storeNextElement(element) {
+    for (let i = 0; i < element.length; i++) {
+      for (let j = 0; j < element[i].length; j++) {
+        if (element[i][j] === 1) {
+          this.nextElement[i][j] = 1;
+        } else {
+          this.nextElement[i][j] = 0;
+        }
+      }
+    }
+  },
   leftBorder: [
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
