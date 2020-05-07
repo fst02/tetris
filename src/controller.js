@@ -10,6 +10,17 @@ const controller = {
   interval: null,
   player: null,
 
+  startGame() {
+    const handler = () => {
+      this.newItem();
+      this.setGravity();
+      this.welcomeUser();
+      this.moveHorizontally();
+      this.moveVertically();
+      document.removeEventListener('keydown', handler);
+    };
+    document.addEventListener('keydown', handler);
+  },
   mergeMatrixes(matrix1, matrix2) {
     for (let i = 0; i < model.linesWithElement.length; i++) {
       for (let j = 0; j < model.linesWithElement[i].length; j++) {
