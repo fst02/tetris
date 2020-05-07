@@ -16,6 +16,7 @@
     "rules": {
         "no-plusplus": "off",
         "import/extensions": "off",
-        "no-param-reassign": "off"
+        "no-param-reassign": "off",
+        "no-alert": "off"
     }
 }

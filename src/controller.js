@@ -143,6 +143,10 @@ const controller = {
     }
     return temp;
   },
+  welcomeUser() {
+    this.player = window.localStorage.getItem('userName');
+    document.getElementById('welcomeUser').innerHTML = `Welcome ${this.player} !`;
+  },
   setUser() {
     this.player = window.localStorage.getItem('userName');
     if (this.player == null) {
