@@ -5,7 +5,7 @@ const preview = {
   canvasWidth: 84,
   canvasHeight: 42,
   item: null,
-  
+
   getRectangleSize(width, columns) {
     return (width - columns + 1) / columns;
   },
